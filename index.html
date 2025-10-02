@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Café Maiora - Menu</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #2c1810 0%, #4a2c1a 100%);
+            overflow: hidden;
+            height: 100vh;
+            cursor: none;
+        }
+
+        .menu-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        /* Promo Slide */
+        .promo-slide {
+            background: linear-gradient(135deg, #d4a574 0%, #8b6f47 100%);
+        }
+
+        .promo-content {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 80px 100px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            max-width: 1400px;
+        }
+
+        .promo-badge {
+            display: inline-block;
+            background: #c94a3c;
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .promo-title {
+            font-size: 5rem;
+            color: #2c1810;
+            margin-bottom: 30px;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+
+        .promo-description {
+            font-size: 2.5rem;
+            color: #5a4a42;
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+
+        .promo-price {
+            font-size: 4rem;
+            color: #c94a3c;
+            font-weight: bold;
+        }
+
+        /* Menu Item Slide */
+        .menu-slide {
+            background: #1a1410;
+        }
+
+        .menu-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            max-width: 1800px;
+            width: 100%;
+            align-items: center;
+        }
+
+        .menu-image {
+            position: relative;
+            overflow: hidden;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            background: #3a2a20;
+        }
+
+        .menu-image img {
+            width: 100%;
+            height: 700px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .menu-details {
+            color: white;
+            padding: 40px;
+        }
+
+        .category-tag {
+            display: inline-block;
+            background: #d4a574;
+            color: #2c1810;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .item-title {
+            font-size: 4.5rem;
+            margin-bottom: 30px;
+            color: #f5e6d3;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+
+        .item-description {
+            font-size: 2.2rem;
+            line-height: 1.6;
+            color: #c9b8a3;
+            margin-bottom: 40px;
+        }
+
+        .item-price {
+            font-size: 4rem;
+            color: #d4a574;
+            font-weight: bold;
+        }
+
+        /* Category Grid Slide */
+        .category-slide {
+            background: #1a1410;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 50px;
+            max-width: 1800px;
+            width: 100%;
+            padding: 80px;
+        }
+
+        .category-header {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .category-header h2 {
+            font-size: 5rem;
+            color: #d4a574;
+            margin-bottom: 20px;
+        }
+
+        .category-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            border: 2px solid #d4a574;
+            transition: transform 0.3s;
+        }
+
+        .category-item h3 {
+            font-size: 2.8rem;
+            color: #f5e6d3;
+            margin-bottom: 20px;
+        }
+
+        .category-item p {
+            font-size: 1.8rem;
+            color: #c9b8a3;
+            margin-bottom: 25px;
+        }
+
+        .category-item .price {
+            font-size: 2.5rem;
+            color: #d4a574;
+            font-weight: bold;
+        }
+
+        /* Progress indicator */
+        .progress-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            height: 8px;
+            background: #d4a574;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        /* Logo */
+        .logo {
+            position: fixed;
+            top: 40px;
+            left: 50px;
+            width: 180px;
+            height: 180px;
+            z-index: 100;
+            filter: drop-shadow(2px 2px 8px rgba(0, 0, 0, 0.5));
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Fullscreen Button */
+        .fullscreen-btn {
+            position: fixed;
+            top: 50px;
+            right: 50px;
+            background: rgba(212, 165, 116, 0.9);
+            color: #2c1810;
+            border: none;
+            padding: 20px 30px;
+            border-radius: 15px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .fullscreen-btn:hover {
+            background: rgba(212, 165, 116, 1);
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .fullscreen-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Hide button when in fullscreen */
+        .fullscreen-active .fullscreen-btn {
+            opacity: 0.3;
+        }
+
+        .fullscreen-active .fullscreen-btn:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <button class="fullscreen-btn" id="fullscreenBtn" onclick="toggleFullscreen()">
+        <span id="fullscreenIcon">⛶</span> Pantalla Completa
+    </button>
+
+    <div class="logo">
+        <!-- <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='98' fill='%23000' stroke='%23d4a574' stroke-width='4'/%3E%3Ctext x='100' y='60' text-anchor='middle' fill='%23fff' font-size='24' font-weight='bold' letter-spacing='8'%3ECAFÉ%3C/text%3E%3Ctext x='100' y='120' text-anchor='middle' fill='%23fff' font-size='48' font-weight='bold' letter-spacing='4'%3EMAIORA%3C/text%3E%3Ctext x='100' y='160' text-anchor='middle' fill='%23fff' font-size='16' font-weight='bold' letter-spacing='4'%3ERESTAURANT%3C/text%3E%3Cpath d='M 100 80 m -30 0 a 1 1 0 0 0 60 0' stroke='%23d4a574' stroke-width='2' fill='none'/%3E%3Cpath d='M 100 130 m -30 0 a 1 1 0 0 1 60 0' stroke='%23d4a574' stroke-width='2' fill='none'/%3E%3C/svg%3E" alt="Café Maiora"> -->
+         <img src="logo.png" alt="">
+    </div>
+
+    <div class="menu-container">
+        <!-- Promo Slide -->
+        <div class="slide promo-slide active">
+            <div class="promo-content">
+                <div class="promo-badge">Especial del Día</div>
+                <h1 class="promo-title">Macchiato de Caramelo Supremo</h1>
+                <p class="promo-description">
+                    Espresso intenso con vainilla, leche vaporizada y un delicioso toque de caramelo mantequilloso
+                </p>
+                <div class="promo-price">$49</div>
+            </div>
+        </div>
+
+        <!-- Menu Item Slide 1 -->
+        <div class="slide menu-slide">
+            <div class="menu-content">
+                <div class="menu-image">
+                    <img src="https://images.pexels.com/photos/302899/pexels-photo-302899.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Espresso" loading="lazy">
+                </div>
+                <div class="menu-details">
+                    <span class="category-tag">Espresso</span>
+                    <h2 class="item-title">Espresso Clásico</h2>
+                    <p class="item-description">
+                        Experiencia de café pura e intensa. Nuestra mezcla de espresso signature con sabores ricos y audaces, con toques de chocolate oscuro y caramelo. Extraído expertamente para la crema perfecta.
+                    </p>
+                    <div class="item-price">$49</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menu Item Slide 2 -->
+        <div class="slide menu-slide">
+            <div class="menu-content">
+                <div class="menu-image">
+                    <img src="https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Cappuccino" loading="lazy">
+                </div>
+                <div class="menu-details">
+                    <span class="category-tag">Café</span>
+                    <h2 class="item-title">Cappuccino</h2>
+                    <p class="item-description">
+                        Armonía perfecta de espresso, leche vaporizada y espuma aterciopelada. Coronado con un delicado toque de cacao en polvo. Un clásico italiano atemporal.
+                    </p>
+                    <div class="item-price">$49</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menu Item Slide 3 -->
+        <div class="slide menu-slide">
+            <div class="menu-content">
+                <div class="menu-image">
+                    <img src="https://images.pexels.com/photos/373639/pexels-photo-373639.jpeg?auto=compress&cs=tinysrgb&w=1200" alt="Latte" loading="lazy">
+                </div>
+                <div class="menu-details">
+                    <span class="category-tag">Café</span>
+                    <h2 class="item-title">Latte de Vainilla</h2>
+                    <p class="item-description">
+                        Suave espresso combinado con leche vaporizada y jarabe de vainilla de Madagascar. Cremoso, dulce y absolutamente irresistible. Nuestra bebida más popular.
+                    </p>
+                    <div class="item-price">$49</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category Grid Slide -->
+        <div class="slide category-slide">
+            <div class="category-grid">
+                <div class="category-header">
+                    <h2>Repostería y Postres</h2>
+                </div>
+
+                <div class="category-item">
+                    <h3>Croissant de Chocolate</h3>
+                    <p>Masa hojaldrada mantecosa rellena de chocolate oscuro</p>
+                    <div class="price">$49</div>
+                </div>
+
+                <div class="category-item">
+                    <h3>Muffin de Arándano</h3>
+                    <p>Horneado fresco diario con arándanos jugosos y streusel</p>
+                    <div class="price">$49</div>
+                </div>
+
+                <div class="category-item">
+                    <h3>Rollo de Canela</h3>
+                    <p>Rollo tibio y suave con glaseado de queso crema</p>
+                    <div class="price">$49</div>
+                </div>
+
+                <div class="category-item">
+                    <h3>Biscotti de Almendra</h3>
+                    <p>Galleta italiana horneada dos veces, perfecta para remojar</p>
+                    <div class="price">$49</div>
+                </div>
+
+                <div class="category-item">
+                    <h3>Pan de Plátano</h3>
+                    <p>Húmedo y delicioso con nueces</p>
+                    <div class="price">$49</div>
+                </div>
+
+                <div class="category-item">
+                    <h3>Empanadita de Manzana</h3>
+                    <p>Masa hojaldre crujiente con relleno de manzana especiada</p>
+                    <div class="price">$49</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Menu Item Slide 4 -->
+        <div class="slide menu-slide">
+            <div class="menu-content">
+                <div class="menu-image">
+                    <img src="cold-brew.webp" alt="Cold Brew" loading="lazy">
+                </div>
+                <div class="menu-details">
+                    <span class="category-tag">Bebidas Frías</span>
+                    <h2 class="item-title">Café Cold Brew</h2>
+                    <p class="item-description">
+                        Café suave y refrescante macerado durante 18 horas. Menos ácido, naturalmente dulce con notas de chocolate. Servido sobre hielo con crema opcional.
+                    </p>
+                    <div class="item-price">$49</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="progress-bar"></div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const progressBar = document.querySelector('.progress-bar');
+        let currentSlide = 0;
+        const slideInterval = 8000; // 8 seconds per slide
+        let progress = 0;
+
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+            progress = 0;
+            progressBar.style.width = '0%';
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        }
+
+        // Auto-advance slides
+        setInterval(nextSlide, slideInterval);
+
+        // Animate progress bar
+        setInterval(() => {
+            progress += 100 / (slideInterval / 100);
+            if (progress > 100) progress = 100;
+            progressBar.style.width = progress + '%';
+        }, 100);
+
+        // Fullscreen functionality
+        function toggleFullscreen() {
+            const elem = document.documentElement;
+            const btn = document.getElementById('fullscreenBtn');
+            const icon = document.getElementById('fullscreenIcon');
+
+            if (!document.fullscreenElement && !document.webkitFullscreenElement &&
+                !document.mozFullScreenElement && !document.msFullscreenElement) {
+                // Enter fullscreen
+                if (elem.requestFullscreen) {
+                    elem.requestFullscreen();
+                } else if (elem.webkitRequestFullscreen) { // Safari
+                    elem.webkitRequestFullscreen();
+                } else if (elem.mozRequestFullScreen) { // Firefox
+                    elem.mozRequestFullScreen();
+                } else if (elem.msRequestFullscreen) { // IE11
+                    elem.msRequestFullscreen();
+                }
+                document.body.classList.add('fullscreen-active');
+                icon.textContent = '⛶';
+                btn.innerHTML = '<span id="fullscreenIcon">⛶</span> Salir';
+            } else {
+                // Exit fullscreen
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+                document.body.classList.remove('fullscreen-active');
+                icon.textContent = '⛶';
+                btn.innerHTML = '<span id="fullscreenIcon">⛶</span> Pantalla Completa';
+            }
+        }
+
+        // Listen for fullscreen changes (when user presses ESC)
+        document.addEventListener('fullscreenchange', updateFullscreenButton);
+        document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
+        document.addEventListener('mozfullscreenchange', updateFullscreenButton);
+        document.addEventListener('MSFullscreenChange', updateFullscreenButton);
+
+        function updateFullscreenButton() {
+            const btn = document.getElementById('fullscreenBtn');
+            const icon = document.getElementById('fullscreenIcon');
+
+            if (!document.fullscreenElement && !document.webkitFullscreenElement &&
+                !document.mozFullScreenElement && !document.msFullscreenElement) {
+                document.body.classList.remove('fullscreen-active');
+                btn.innerHTML = '<span id="fullscreenIcon">⛶</span> Pantalla Completa';
+            } else {
+                document.body.classList.add('fullscreen-active');
+                btn.innerHTML = '<span id="fullscreenIcon">⛶</span> Salir';
+            }
+        }
+
+        // Prevent screen from sleeping (attempt)
+        let wakeLock = null;
+        if ('wakeLock' in navigator) {
+            navigator.wakeLock.request('screen').then(lock => {
+                wakeLock = lock;
+            }).catch(err => {
+                console.log('Wake Lock error:', err);
+            });
+        }
+    </script>
+</body>
+</html>
