@@ -431,23 +431,38 @@
     <div class="progress-bar"></div>
 
     <script>
-        const slides = document.querySelectorAll('.slide');
+        // Only select slides that are actually in the DOM (not commented out)
+        let slides = [];
         const progressBar = document.querySelector('.progress-bar');
         let currentSlide = 0;
         const slideInterval = 8000; // 8 seconds per slide
         let progress = 0;
 
+        // Initialize slides array with only elements that have the 'slide' class
+        function initializeSlides() {
+            slides = Array.from(document.querySelectorAll('.slide'));
+            if (slides.length > 0) {
+                slides[0].classList.add('active');
+            }
+        }
+
         function showSlide(index) {
             slides.forEach(slide => slide.classList.remove('active'));
-            slides[index].classList.add('active');
+            if (slides[index]) {
+                slides[index].classList.add('active');
+            }
             progress = 0;
             progressBar.style.width = '0%';
         }
 
         function nextSlide() {
+            if (slides.length === 0) return;
             currentSlide = (currentSlide + 1) % slides.length;
             showSlide(currentSlide);
         }
+
+        // Initialize slides on page load
+        initializeSlides();
 
         // Auto-advance slides
         setInterval(nextSlide, slideInterval);
